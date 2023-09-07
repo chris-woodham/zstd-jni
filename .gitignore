@@ -18,3 +18,5 @@ gradlew*
 /CMakeFiles
 /CMakeCache.txt
 /cmake_install.cmake
+
+*rsync.sh*
