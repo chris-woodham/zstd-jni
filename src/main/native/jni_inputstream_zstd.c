@@ -33,9 +33,9 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdInputStreamNoFinalizer_re
  * Method:    createDStream
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdInputStreamNoFinalizer_createDStream
+JNIEXPORT jobject JNICALL Java_com_github_luben_zstd_ZstdInputStreamNoFinalizer_createDStream
   (JNIEnv *env, jclass obj) {
-    return (jlong)(intptr_t) ZSTD_createDStream();
+    return (*env)->NewMemoryAddress(env, ZSTD_createDStream());
 }
 
 /*
@@ -45,7 +45,7 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdInputStreamNoFinalizer_cr
  */
 JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdInputStreamNoFinalizer_freeDStream
   (JNIEnv *env, jclass obj, jobject stream) {
-    return ZSTD_freeDCtx((ZSTD_DCtx *)(intptr_t) stream);
+    return ZSTD_freeDCtx((ZSTD_DCtx *)(*env)->GetMemoryAddress(env, stream));
 }
 
 /*
@@ -83,7 +83,7 @@ JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdInputStreamNoFinalizer_dec
     ZSTD_outBuffer output = { dst_buff, dst_size, dst_pos };
     ZSTD_inBuffer input = { src_buff, src_size, src_pos };
 
-    size = ZSTD_decompressStream((ZSTD_DCtx *)(intptr_t) stream, &output, &input);
+    size = ZSTD_decompressStream((ZSTD_DCtx *)(*env)->GetMemoryAddress(env, stream), &output, &input);
 
     (*env)->ReleasePrimitiveArrayCritical(env, src, src_buff, JNI_ABORT);
 E2: (*env)->ReleasePrimitiveArrayCritical(env, dst, dst_buff, 0);

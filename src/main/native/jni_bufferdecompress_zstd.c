@@ -22,9 +22,9 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdBufferDecompressingStream
  * Method:    createDStreamNative
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdBufferDecompressingStreamNoFinalizer_createDStreamNative
+JNIEXPORT jobject JNICALL Java_com_github_luben_zstd_ZstdBufferDecompressingStreamNoFinalizer_createDStreamNative
   (JNIEnv *env, jclass obj) {
-    return (jlong)(intptr_t) ZSTD_createDStream();
+    return (*env)->NewMemoryAddress(env, ZSTD_createDStream());
 }
 
 /*
@@ -34,7 +34,7 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdBufferDecompressingStream
  */
 JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdBufferDecompressingStreamNoFinalizer_freeDStreamNative
   (JNIEnv *env, jclass obj, jobject stream) {
-    return ZSTD_freeDCtx((ZSTD_DCtx *)(intptr_t) stream);
+    return ZSTD_freeDCtx((ZSTD_DCtx *)(*env)->GetMemoryAddress(env, stream));
 }
 
 /*
@@ -47,7 +47,7 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdBufferDecompressingStream
     jclass clazz = (*env)->GetObjectClass(env, obj);
     consumed_id = (*env)->GetFieldID(env, clazz, "consumed", "I");
     produced_id = (*env)->GetFieldID(env, clazz, "produced", "I");
-    return ZSTD_initDStream((ZSTD_DCtx *)(intptr_t) stream);
+    return ZSTD_initDStream((ZSTD_DCtx *)(*env)->GetMemoryAddress(env, stream));
 }
 
 /*
@@ -76,7 +76,7 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdBufferDecompressingStream
     ZSTD_outBuffer output = { dst_buf_ptr + dst_offset, dst_size, 0};
     ZSTD_inBuffer input = { src_buf_ptr + src_offset, src_size, 0};
 
-    size = ZSTD_decompressStream((ZSTD_DCtx *)(intptr_t) stream, &output, &input);
+    size = ZSTD_decompressStream((ZSTD_DCtx *)(*env)->GetMemoryAddress(env, stream), &output, &input);
 
     (*env)->ReleasePrimitiveArrayCritical(env, src, src_buf_ptr, JNI_ABORT);
 E2: (*env)->ReleasePrimitiveArrayCritical(env, dst, dst_buf_ptr, 0);

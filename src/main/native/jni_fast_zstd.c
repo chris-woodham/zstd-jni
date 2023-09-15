@@ -240,11 +240,11 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_Zstd_decompressDirectByteBuff
  * Method:    init
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdCompressCtx_init
+JNIEXPORT jobject JNICALL Java_com_github_luben_zstd_ZstdCompressCtx_init
   (JNIEnv *env, jclass clazz)
 {
     ZSTD_CCtx* cctx = ZSTD_createCCtx();
-    return (jlong)(intptr_t) cctx;
+    return (*env)->NewMemoryAddress(env, cctx);
 }
 
 /*
@@ -495,11 +495,11 @@ E1: return size;
  * Method:    init
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdDecompressCtx_init
+JNIEXPORT jobject JNICALL Java_com_github_luben_zstd_ZstdDecompressCtx_init
   (JNIEnv *env, jclass clazz)
 {
     ZSTD_DCtx* dctx = ZSTD_createDCtx();
-    return (jlong)(intptr_t) dctx;
+    return (*env)->NewMemoryAddress(env, dctx);
 }
 
 /*

@@ -23,9 +23,9 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdDirectBufferCompressingSt
  * Method:    createCStream
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdDirectBufferCompressingStreamNoFinalizer_createCStream
+JNIEXPORT jobject JNICALL Java_com_github_luben_zstd_ZstdDirectBufferCompressingStreamNoFinalizer_createCStream
   (JNIEnv *env, jclass obj) {
-    return (jlong)(intptr_t) ZSTD_createCStream();
+    return (*env)->NewMemoryAddress(env, ZSTD_createCStream());
 }
 
 /*
@@ -35,7 +35,7 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdDirectBufferCompressingSt
  */
 JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdDirectBufferCompressingStreamNoFinalizer_freeCStream
   (JNIEnv *env, jclass obj, jobject stream) {
-    return ZSTD_freeCStream((ZSTD_CStream *)(intptr_t) stream);
+    return ZSTD_freeCStream((ZSTD_CStream *)(*env)->GetMemoryAddress(env, stream));
 }
 
 /*
@@ -48,7 +48,7 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdDirectBufferCompressingSt
     jclass clazz = (*env)->GetObjectClass(env, obj);
     consumed_id = (*env)->GetFieldID(env, clazz, "consumed", "I");
     produced_id = (*env)->GetFieldID(env, clazz, "produced", "I");
-    return ZSTD_initCStream((ZSTD_CStream *)(intptr_t) stream, level);
+    return ZSTD_initCStream((ZSTD_CStream *)(*env)->GetMemoryAddress(env, stream), level);
 }
 
 /*
@@ -64,9 +64,10 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdDirectBufferCompressingSt
     produced_id = (*env)->GetFieldID(env, clazz, "produced", "I");
     void *dict_buff = (*env)->GetPrimitiveArrayCritical(env, dict, NULL);
     if (dict_buff == NULL) goto E1;
-    ZSTD_CCtx_reset((ZSTD_CStream *)(intptr_t) stream, ZSTD_reset_session_only);
-    ZSTD_CCtx_setParameter((ZSTD_CStream *)(intptr_t) stream, ZSTD_c_compressionLevel, level);
-    result = ZSTD_CCtx_loadDictionary((ZSTD_CStream *)(intptr_t) stream, dict_buff, dict_size);
+    ZSTD_CStream *stream_pointer = (ZSTD_CStream *)(*env)->GetMemoryAddress(env, stream);
+    ZSTD_CCtx_reset(stream_pointer, ZSTD_reset_session_only);
+    ZSTD_CCtx_setParameter(stream_pointer, ZSTD_c_compressionLevel, level);
+    result = ZSTD_CCtx_loadDictionary(stream_pointer, dict_buff, dict_size);
     (*env)->ReleasePrimitiveArrayCritical(env, dict, dict_buff, JNI_ABORT);
 E1:
     return result;
@@ -85,8 +86,9 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdDirectBufferCompressingSt
     jfieldID compress_dict = (*env)->GetFieldID(env, dict_clazz, "nativePtr", "J");
     ZSTD_CDict* cdict = (ZSTD_CDict*)(*env)->GetMemoryAddress(env, (*env)->GetObjectField(env, obj, compress_dict));
     if (cdict == NULL) return -ZSTD_error_dictionary_wrong;
-    ZSTD_CCtx_reset((ZSTD_CStream *)(*env)->GetMemoryAddress(env, stream), ZSTD_reset_session_only);
-    return ZSTD_CCtx_refCDict((ZSTD_CStream *)(intptr_t) stream, cdict);
+    ZSTD_CStream *stream_pointer = (ZSTD_CStream *)(*env)->GetMemoryAddress(env, stream);
+    ZSTD_CCtx_reset(stream_pointer, ZSTD_reset_session_only);
+    return ZSTD_CCtx_refCDict(stream_pointer, cdict);
 }
 
 /*
@@ -151,7 +153,7 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdDirectBufferCompressingSt
 
     jsize dst_cap = (*env)->GetDirectBufferCapacity(env, dst_buf);
     if (dst_offset + dst_size > dst_cap) return -ZSTD_error_dstSize_tooSmall;
-    char *dst_buf_ptr = (char*)(*env)->GetDirectBufferPointer(env, dst_buf);
+    char *dst_buf_ptr = (char*)(*env)->GetDirectBufferAddress(env, dst_buf);
     if (dst_buf_ptr != NULL) {
         ZSTD_outBuffer output = { dst_buf_ptr + dst_offset, dst_size, 0 };
         size = ZSTD_flushStream((ZSTD_CStream *)(*env)->GetMemoryAddress(env, stream), &output);

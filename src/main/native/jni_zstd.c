@@ -219,11 +219,11 @@ E1:
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_com_github_luben_zstd_Zstd_loadFastDictDecompress
-  (JNIEnv *env, jclass obj, jobject stream, jobject dict_native_ptr) {
-    // jclass dict_clazz = (*env)->GetObjectClass(env, dict);
-    // jfieldID decompress_dict = (*env)->GetFieldID(env, dict_clazz, "nativePtr", "J");
-    // ZSTD_DDict* ddict = (ZSTD_DDict*)(intptr_t)(*env)->GetLongField(env, dict, decompress_dict);
-    ZSTD_DDict* ddict = (ZSTD_DDict*)(*env)->GetMemoryAddress(env, dict_native_ptr);
+  (JNIEnv *env, jclass obj, jobject stream, jobject dict) {
+    jclass dict_clazz = (*env)->GetObjectClass(env, dict);
+    jfieldID decompress_dict = (*env)->GetFieldID(env, dict_clazz, "nativePtr", "Ljava/lang/MemoryAddress;");
+    ZSTD_DDict* ddict = (ZSTD_DDict*)(*env)->GetMemoryAddress(env, (*env)->GetObjectField(env, dict, decompress_dict));
+    // ZSTD_DDict* ddict = (ZSTD_DDict*)(*env)->GetMemoryAddress(env, dict_native_ptr);
     if (ddict == NULL) return -ZSTD_error_dictionary_wrong;
     return ZSTD_DCtx_refDDict((ZSTD_DCtx *) (*env)->GetMemoryAddress(env, stream), ddict);
 }
@@ -252,10 +252,10 @@ E1:
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_com_github_luben_zstd_Zstd_loadFastDictCompress
-  (JNIEnv *env, jclass obj, jobject stream, jobject dict_native_ptr) {
-    // jclass dict_clazz = (*env)->GetObjectClass(env, dict);
-    // jfieldID compress_dict = (*env)->GetFieldID(env, dict_clazz, "nativePtr", "Ljava/lang/MemoryAddress;");
-    // ZSTD_CDict* cdict = (ZSTD_CDict*)(*env)->GetMemoryAddress(env, (*env)->GetObjectField(env, dict, compress_dict));
+  (JNIEnv *env, jclass obj, jobject stream, jobject dict) {
+    jclass dict_clazz = (*env)->GetObjectClass(env, dict);
+    jfieldID compress_dict = (*env)->GetFieldID(env, dict_clazz, "nativePtr", "Ljava/lang/MemoryAddress;");
+    ZSTD_CDict* cdict = (ZSTD_CDict*)(*env)->GetMemoryAddress(env, (*env)->GetObjectField(env, dict, compress_dict));
     ZSTD_CDict* cdict = (ZSTD_CDict*)(*env)->GetMemoryAddress(env, dict_native_ptr);
     if (cdict == NULL) return -ZSTD_error_dictionary_wrong;
     return ZSTD_CCtx_refCDict((ZSTD_CCtx *)(*env)->GetMemoryAddress(env, stream), cdict);
