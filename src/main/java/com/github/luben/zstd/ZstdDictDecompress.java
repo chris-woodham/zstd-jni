@@ -9,7 +9,7 @@ public class ZstdDictDecompress extends SharedDictBase {
         Native.load();
     }
 
-    private long nativePtr = 0L;
+    private MemoryAddress nativePtr = null;
 
     private native void init(byte[] dict, int dict_offset, int dict_size);
 
@@ -73,9 +73,9 @@ public class ZstdDictDecompress extends SharedDictBase {
 
     @Override
      void doClose() {
-        if (nativePtr != 0) {
+        if (!MemoryAddress.isNull(nativePtr)) {
             free();
-            nativePtr = 0;
+            nativePtr = null;
         }
     }
 }

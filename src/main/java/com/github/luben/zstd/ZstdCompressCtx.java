@@ -12,13 +12,13 @@ public class ZstdCompressCtx extends AutoCloseBase {
         Native.load();
     }
 
-    private long nativePtr = 0;
+    private MemoryAddress nativePtr = null;
 
     private ZstdDictCompress compression_dict = null;
 
-    private static native long init();
+    private static native MemoryAddress init();
 
-    private static native void free(long ptr);
+    private static native void free(MemoryAddress ptr);
 
     /**
      * Create a context for faster compress operations
@@ -26,21 +26,21 @@ public class ZstdCompressCtx extends AutoCloseBase {
      */
     public ZstdCompressCtx() {
         nativePtr = init();
-        if (0 == nativePtr) {
+        if (MemoryAddress.isNull(nativePtr)) {
             throw new IllegalStateException("ZSTD_createCompressCtx failed");
         }
         storeFence();
     }
 
     void doClose() {
-        if (nativePtr != 0) {
+        if (!MemoryAddress.isNull(nativePtr)) {
             free(nativePtr);
-            nativePtr = 0;
+            nativePtr = null;
         }
     }
 
     private void ensureOpen() {
-        if (nativePtr == 0) {
+        if (MemoryAddress.isNull(nativePtr)) {
             throw new IllegalStateException("Compression context is closed");
         }
     }
@@ -57,7 +57,7 @@ public class ZstdCompressCtx extends AutoCloseBase {
         return this;
     }
 
-    private static native void setLevel0(long ptr, int level);
+    private static native void setLevel0(MemoryAddress ptr, int level);
 
     /**
      * Enable or disable magicless frames
@@ -82,7 +82,7 @@ public class ZstdCompressCtx extends AutoCloseBase {
         releaseSharedLock();
         return this;
     }
-    private static native void setChecksum0(long ptr, boolean checksumFlag);
+    private static native void setChecksum0(MemoryAddress ptr, boolean checksumFlag);
 
 
     public ZstdCompressCtx setWorkers(int workers) {
@@ -236,7 +236,7 @@ public class ZstdCompressCtx extends AutoCloseBase {
         releaseSharedLock();
         return this;
     }
-    private static native void setContentSize0(long ptr, boolean contentSizeFlag);
+    private static native void setContentSize0(MemoryAddress ptr, boolean contentSizeFlag);
 
     /**
      * Enable or disable dictID
@@ -249,7 +249,7 @@ public class ZstdCompressCtx extends AutoCloseBase {
         releaseSharedLock();
         return this;
     }
-    private static native void setDictID0(long ptr, boolean dictIDFlag);
+    private static native void setDictID0(MemoryAddress ptr, boolean dictIDFlag);
 
     /**
      * Enable or disable LongDistanceMatching and set the window size
@@ -290,7 +290,7 @@ public class ZstdCompressCtx extends AutoCloseBase {
         }
         return this;
     }
-    private native long loadCDictFast0(long ptr, ZstdDictCompress dict);
+    private native long loadCDictFast0(MemoryAddress ptr, ZstdDictCompress dict);
 
     /**
      * Load compression dictionary to be used for subsequently compressed frames.

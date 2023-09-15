@@ -44,7 +44,7 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdInputStreamNoFinalizer_cr
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdInputStreamNoFinalizer_freeDStream
-  (JNIEnv *env, jclass obj, jlong stream) {
+  (JNIEnv *env, jclass obj, jobject stream) {
     return ZSTD_freeDCtx((ZSTD_DCtx *)(intptr_t) stream);
 }
 
@@ -54,7 +54,7 @@ JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdInputStreamNoFinalizer_fre
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdInputStreamNoFinalizer_initDStream
-  (JNIEnv *env, jclass obj, jlong stream) {
+  (JNIEnv *env, jclass obj, jobject stream) {
     jclass clazz = (*env)->GetObjectClass(env, obj);
     // Initialize the fields ids only once - they can't change
     src_pos_id = (*env)->GetFieldID(env, clazz, "srcPos", "J");
@@ -68,7 +68,7 @@ JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdInputStreamNoFinalizer_ini
  * Signature: (J[BI[BI)I
  */
 JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdInputStreamNoFinalizer_decompressStream
-  (JNIEnv *env, jclass obj, jlong stream, jbyteArray dst, jint dst_size, jbyteArray src, jint src_size) {
+  (JNIEnv *env, jclass obj, jobject stream, jbyteArray dst, jint dst_size, jbyteArray src, jint src_size) {
 
     size_t size = -ZSTD_error_memory_allocation;
 

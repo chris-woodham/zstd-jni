@@ -34,7 +34,7 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_c
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_freeCStream
-  (JNIEnv *env, jclass obj, jlong stream) {
+  (JNIEnv *env, jclass obj, jobject stream) {
     return ZSTD_freeCStream((ZSTD_CStream *)(intptr_t) stream);
 }
 
@@ -44,7 +44,7 @@ JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_fr
  * Signature: (JII)I
  */
 JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_resetCStream
-  (JNIEnv *env, jclass obj, jlong stream) {
+  (JNIEnv *env, jclass obj, jobject stream) {
     jclass clazz = (*env)->GetObjectClass(env, obj);
     src_pos_id = (*env)->GetFieldID(env, clazz, "srcPos", "J");
     dst_pos_id = (*env)->GetFieldID(env, clazz, "dstPos", "J");
@@ -57,7 +57,7 @@ JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_re
  * Signature: (J[BI[BI)I
  */
 JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_compressStream
-  (JNIEnv *env, jclass obj, jlong stream, jbyteArray dst, jint dst_size, jbyteArray src, jint src_size) {
+  (JNIEnv *env, jclass obj, jobject stream, jbyteArray dst, jint dst_size, jbyteArray src, jint src_size) {
 
     size_t size = -ZSTD_error_memory_allocation;
 
@@ -85,7 +85,7 @@ E1: return (jint) size;
  * Signature: (J[BI)I
  */
 JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_endStream
-  (JNIEnv *env, jclass obj, jlong stream, jbyteArray dst, jint dst_size) {
+  (JNIEnv *env, jclass obj, jobject stream, jbyteArray dst, jint dst_size) {
 
     size_t size = -ZSTD_error_memory_allocation;
     void *dst_buff = (*env)->GetPrimitiveArrayCritical(env, dst, NULL);
@@ -105,7 +105,7 @@ JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_en
  * Signature: (J[BI)I
  */
 JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_flushStream
-  (JNIEnv *env, jclass obj, jlong stream, jbyteArray dst, jint dst_size) {
+  (JNIEnv *env, jclass obj, jobject stream, jbyteArray dst, jint dst_size) {
 
     size_t size = -ZSTD_error_memory_allocation;
     void *dst_buff = (*env)->GetPrimitiveArrayCritical(env, dst, NULL);

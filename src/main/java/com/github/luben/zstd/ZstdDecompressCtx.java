@@ -12,12 +12,12 @@ public class ZstdDecompressCtx extends AutoCloseBase {
         Native.load();
     }
 
-    private long nativePtr = 0;
+    private MemoryAddress nativePtr = 0;
     private ZstdDictDecompress decompression_dict = null;
 
-    private static native long init();
+    private static native MemoryAddress init();
 
-    private static native void free(long nativePtr);
+    private static native void free(MemoryAddress nativePtr);
 
     /**
      * Create a context for faster compress operations
@@ -25,16 +25,16 @@ public class ZstdDecompressCtx extends AutoCloseBase {
      */
     public ZstdDecompressCtx() {
         nativePtr = init();
-        if (0 == nativePtr) {
+        if (MemoryAddress.isNull(nativePtr)) {
             throw new IllegalStateException("ZSTD_createDeCompressCtx failed");
         }
         storeFence();
     }
 
     void doClose() {
-        if (nativePtr != 0) {
+        if (!MemoryAddress.isNull(nativePtr)) {
             free(nativePtr);
-            nativePtr = 0;
+            nativePtr = null;
         }
     }
 
@@ -72,7 +72,7 @@ public class ZstdDecompressCtx extends AutoCloseBase {
         }
         return this;
     }
-    private static native long loadDDictFast0(long nativePtr, ZstdDictDecompress dict);
+    private static native long loadDDictFast0(MemoryAddress nativePtr, ZstdDictDecompress dict);
 
     /**
      * Load decompression dictionary.
@@ -93,7 +93,7 @@ public class ZstdDecompressCtx extends AutoCloseBase {
         }
         return this;
     }
-    private static native long loadDDict0(long nativePtr, byte[] dict);
+    private static native long loadDDict0(MemoryAddress nativePtr, byte[] dict);
 
     /**
      * Clear all state and parameters from the decompression context. This leaves the object in a
@@ -103,10 +103,10 @@ public class ZstdDecompressCtx extends AutoCloseBase {
         ensureOpen();
         reset0(nativePtr);
     }
-    private static native void reset0(long nativePtr);
+    private static native void reset0(MemoryAddress nativePtr);
 
     private void ensureOpen() {
-        if (nativePtr == 0) {
+        if (MemoryAddress.isNull(nativePtr)) {
             throw new IllegalStateException("Decompression context is closed");
         }
     }
@@ -138,7 +138,7 @@ public class ZstdDecompressCtx extends AutoCloseBase {
      * bit is set if an error occurred. If an error occurred, the lowest 31 bits encode a zstd error
      * code. Otherwise, the lowest 31 bits are the new position of the source buffer.
      */
-    private static native long decompressDirectByteBufferStream0(long nativePtr, ByteBuffer dst, int dstOffset, int dstSize, ByteBuffer src, int srcOffset, int srcSize);
+    private static native long decompressDirectByteBufferStream0(MemoryAddress nativePtr, ByteBuffer dst, int dstOffset, int dstSize, ByteBuffer src, int srcOffset, int srcSize);
 
     /**
      * Decompresses buffer 'srcBuff' into buffer 'dstBuff' using this ZstdDecompressCtx.
@@ -180,7 +180,7 @@ public class ZstdDecompressCtx extends AutoCloseBase {
         }
     }
 
-    private static native long decompressDirectByteBuffer0(long nativePtr, ByteBuffer dst, int dstOffset, int dstSize, ByteBuffer src, int srcOffset, int srcSize);
+    private static native long decompressDirectByteBuffer0(MemoryAddress nativePtr, ByteBuffer dst, int dstOffset, int dstSize, ByteBuffer src, int srcOffset, int srcSize);
 
     /**
      * Decompresses byte array 'srcBuff' into byte array 'dstBuff' using this ZstdDecompressCtx.
@@ -213,7 +213,7 @@ public class ZstdDecompressCtx extends AutoCloseBase {
         }
     }
 
-    private static native long decompressByteArray0(long nativePtr, byte[] dst, int dstOffset, int dstSize, byte[] src, int srcOffset, int srcSize);
+    private static native long decompressByteArray0(MemoryAddress nativePtr, byte[] dst, int dstOffset, int dstSize, byte[] src, int srcOffset, int srcSize);
 
     /* Covenience methods */
 
