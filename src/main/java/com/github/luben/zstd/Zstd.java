@@ -7,6 +7,8 @@ import com.github.luben.zstd.util.Native;
 import com.github.luben.zstd.ZstdCompressCtx;
 import com.github.luben.zstd.ZstdDecompressCtx;
 
+import java.lang.MemoryAddress;
+
 public class Zstd {
 
     static {
@@ -171,7 +173,7 @@ public class Zstd {
      * @return  the number of bytes written into buffer 'dst' or an error code if
      *          it fails (which can be tested using ZSTD_isError())
      */
-    public static native long compressUnsafe(long dst, long dstSize, long src, long srcSize, int level, boolean checksumFlag);
+    public static native long compressUnsafe(MemoryAddress dst, long dstSize, MemoryAddress src, long srcSize, int level, boolean checksumFlag);
 
     /**
      * Compresses buffer 'src' into direct buffer 'dst'.
@@ -188,7 +190,7 @@ public class Zstd {
      * @return  the number of bytes written into buffer 'dst' or an error code if
      *          it fails (which can be tested using ZSTD_isError())
      */
-    public static long compressUnsafe(long dst, long dstSize, long src, long srcSize, int level) {
+    public static long compressUnsafe(MemoryAddress dst, long dstSize, MemoryAddress src, long srcSize, int level) {
         return compressUnsafe(dst, dstSize, src, srcSize, level, false);
     }
 
@@ -451,7 +453,7 @@ public class Zstd {
      *          or an errorCode if it fails (which can be tested using ZSTD_isError())
      *
      */
-    public static native long decompressUnsafe(long dst, long dstSize, long src, long srcSize);
+    public static native long decompressUnsafe(MemoryAddress dst, long dstSize, MemoryAddress src, long srcSize);
 
     /**
      * Decompresses buffer 'src' into buffer 'dst' with dictionary.
@@ -556,27 +558,27 @@ public class Zstd {
     }
 
     /* Advance API */
-    public static native int loadDictDecompress(long stream, byte[] dict, int dict_size);
-    public static native int loadFastDictDecompress(long stream, ZstdDictDecompress dict);
-    public static native int loadDictCompress(long stream, byte[] dict, int dict_size);
-    public static native int loadFastDictCompress(long stream, ZstdDictCompress dict);
-    public static native int setCompressionChecksums(long stream, boolean useChecksums);
-    public static native int setCompressionMagicless(long stream, boolean useMagicless);
-    public static native int setCompressionLevel(long stream, int level);
-    public static native int setCompressionLong(long stream, int windowLog);
-    public static native int setCompressionWorkers(long stream, int workers);
-    public static native int setCompressionOverlapLog(long stream, int overlapLog);
-    public static native int setCompressionJobSize(long stream, int jobSize);
-    public static native int setCompressionTargetLength(long stream, int targetLength);
-    public static native int setCompressionMinMatch(long stream, int minMatch);
-    public static native int setCompressionSearchLog(long stream, int searchLog);
-    public static native int setCompressionChainLog(long stream, int chainLog);
-    public static native int setCompressionHashLog(long stream, int hashLog);
-    public static native int setCompressionWindowLog(long stream, int windowLog);
-    public static native int setCompressionStrategy(long stream, int strategy);
-    public static native int setDecompressionLongMax(long stream, int windowLogMax);
-    public static native int setDecompressionMagicless(long stream, boolean useMagicless);
-    public static native int setRefMultipleDDicts(long stream, boolean useMultiple);
+    public static native int loadDictDecompress(MemoryAddress stream, byte[] dict, int dict_size);
+    public static native int loadFastDictDecompress(MemoryAddress stream, ZstdDictDecompress dict);
+    public static native int loadDictCompress(MemoryAddress stream, byte[] dict, int dict_size);
+    public static native int loadFastDictCompress(MemoryAddress stream, ZstdDictCompress dict);
+    public static native int setCompressionChecksums(MemoryAddress stream, boolean useChecksums);
+    public static native int setCompressionMagicless(MemoryAddress stream, boolean useMagicless);
+    public static native int setCompressionLevel(MemoryAddress stream, int level);
+    public static native int setCompressionLong(MemoryAddress stream, int windowLog);
+    public static native int setCompressionWorkers(MemoryAddress stream, int workers);
+    public static native int setCompressionOverlapLog(MemoryAddress stream, int overlapLog);
+    public static native int setCompressionJobSize(MemoryAddress stream, int jobSize);
+    public static native int setCompressionTargetLength(MemoryAddress stream, int targetLength);
+    public static native int setCompressionMinMatch(MemoryAddress stream, int minMatch);
+    public static native int setCompressionSearchLog(MemoryAddress stream, int searchLog);
+    public static native int setCompressionChainLog(MemoryAddress stream, int chainLog);
+    public static native int setCompressionHashLog(MemoryAddress stream, int hashLog);
+    public static native int setCompressionWindowLog(MemoryAddress stream, int windowLog);
+    public static native int setCompressionStrategy(MemoryAddress stream, int strategy);
+    public static native int setDecompressionLongMax(MemoryAddress stream, int windowLogMax);
+    public static native int setDecompressionMagicless(MemoryAddress stream, boolean useMagicless);
+    public static native int setRefMultipleDDicts(MemoryAddress stream, boolean useMultiple);
 
     /* Utility methods */
 

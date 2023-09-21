@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 public abstract class BaseZstdBufferDecompressingStreamNoFinalizer implements Closeable {
-    protected long stream;
+    protected MemoryAddress stream;
     protected ByteBuffer source;
     protected boolean closed = false;
     private boolean finishedFrame = false;
@@ -143,11 +143,11 @@ public abstract class BaseZstdBufferDecompressingStreamNoFinalizer implements Cl
      */
     public abstract int read(ByteBuffer target) throws IOException;
 
-    abstract long createDStream();
+    abstract MemoryAddress createDStream();
 
-    abstract long freeDStream(long stream);
+    abstract long freeDStream(MemoryAddress stream);
 
-    abstract long initDStream(long stream);
+    abstract long initDStream(MemoryAddress stream);
 
-    abstract long decompressStream(long stream, ByteBuffer dst, int dstOffset, int dstSize, ByteBuffer src, int srcOffset, int srcSize);
+    abstract long decompressStream(MemoryAddress stream, ByteBuffer dst, int dstOffset, int dstSize, ByteBuffer src, int srcOffset, int srcSize);
 }

@@ -14,7 +14,7 @@ public class ZstdDirectBufferCompressingStreamNoFinalizer implements Closeable, 
     }
 
     private ByteBuffer target;
-    private final long stream;
+    private final MemoryAddress stream;
 
     /**
      * This method should flush the buffer and either return the same buffer (but cleared) or a new buffer
@@ -47,14 +47,14 @@ public class ZstdDirectBufferCompressingStreamNoFinalizer implements Closeable, 
 
     /* JNI methods */
     private static native long recommendedCOutSize();
-    private static native long createCStream();
-    private static native long  freeCStream(long ctx);
-    private native long initCStream(long ctx, int level);
-    private native long initCStreamWithDict(long ctx, byte[] dict, int dict_size, int level);
-    private native long initCStreamWithFastDict(long ctx, ZstdDictCompress dict);
-    private native long compressDirectByteBuffer(long ctx, ByteBuffer dst, int dstOffset, int dstSize, ByteBuffer src, int srcOffset, int srcSize);
-    private native long flushStream(long ctx, ByteBuffer dst, int dstOffset, int dstSize);
-    private native long endStream(long ctx, ByteBuffer dst, int dstOffset, int dstSize);
+    private static native MemoryAddress createCStream();
+    private static native long  freeCStream(MemoryAddress ctx);
+    private native long initCStream(MemoryAddress ctx, int level);
+    private native long initCStreamWithDict(MemoryAddress ctx, byte[] dict, int dict_size, int level);
+    private native long initCStreamWithFastDict(MemoryAddress ctx, ZstdDictCompress dict);
+    private native long compressDirectByteBuffer(MemoryAddress ctx, ByteBuffer dst, int dstOffset, int dstSize, ByteBuffer src, int srcOffset, int srcSize);
+    private native long flushStream(MemoryAddress ctx, ByteBuffer dst, int dstOffset, int dstSize);
+    private native long endStream(MemoryAddress ctx, ByteBuffer dst, int dstOffset, int dstSize);
 
     public ZstdDirectBufferCompressingStreamNoFinalizer setDict(byte[] dict) {
         if (initialized) {

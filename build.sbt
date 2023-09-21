@@ -157,22 +157,7 @@ description := "JNI bindings for Zstd native library that provides fast and high
 
 packageOptions in (Compile, packageBin) ++= Seq(
   Package.ManifestAttributes(new java.util.jar.Attributes.Name("Automatic-Module-Name") -> "com.github.luben.zstd_jni"),
-  Package.ManifestAttributes(new java.util.jar.Attributes.Name("Bundle-NativeCode") ->
-  {s"""darwin/x86_64/libzstd-jni-${version.value}.dylib;osname=MacOS;osname=MacOSX;processor=x86_64,
-      |darwin/aarch64/libzstd-jni-${version.value}.dylib;osname=MacOS;osname=MacOSX;processor=aarch64,
-      |freebsd/amd64/libzstd-jni-${version.value}.so;osname=FreeBSD;processor=amd64,
-      |freebsd/i386/libzstd-jni-${version.value}.so;osname=FreeBSD;processor=i386,
-      |linux/aarch64/libzstd-jni-${version.value}.so;osname=Linux;processor=aarch64,
-      |linux/amd64/libzstd-jni-${version.value}.so;osname=Linux;processor=amd64,
-      |linux/arm/libzstd-jni-${version.value}.so;osname=Linux;processor=arm,
-      |linux/i386/libzstd-jni-${version.value}.so;osname=Linux;processor=i386,
-      |linux/mips64/libzstd-jni-${version.value}.so;osname=Linux;processor=mips64,
-      |linux/loongarch64/libzstd-jni-${version.value}.so;osname=Linux;processor=loongarch64,
-      |linux/ppc64/libzstd-jni-${version.value}.so;osname=Linux;processor=ppc64,
-      |linux/ppc64le/libzstd-jni-${version.value}.so;osname=Linux;processor=ppc64le,
-      |linux/s390x/libzstd-jni-${version.value}.so;osname=Linux;processor=s390x,
-      |win/amd64/libzstd-jni-${version.value}.dll;osname=Win32;processor=amd64,
-      |win/x86/libzstd-jni-${version.value}.dll;osname=Win32;processor=x86""".stripMargin}),
+  Package.ManifestAttributes(new java.util.jar.Attributes.Name("Bundle-NativeCode") -> "freebsd/aarch64/libzstd-jni-${version.value}.so;osname=FreeBSD;processor=aarch64"),
 )
 
 pomExtra := (

@@ -23,9 +23,9 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_r
  * Method:    createCStream
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_createCStream
+JNIEXPORT jobject JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_createCStream
   (JNIEnv *env, jclass obj) {
-    return (jlong)(intptr_t) ZSTD_createCStream();
+    return (*env)->NewMemoryAddress(env, ZSTD_createCStream());
 }
 
 /*
@@ -34,8 +34,8 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_c
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_freeCStream
-  (JNIEnv *env, jclass obj, jlong stream) {
-    return ZSTD_freeCStream((ZSTD_CStream *)(intptr_t) stream);
+  (JNIEnv *env, jclass obj, jobject stream) {
+    return ZSTD_freeCStream((ZSTD_CStream *)(*env)->GetMemoryAddress(env, stream));
 }
 
 /*
@@ -44,11 +44,11 @@ JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_fr
  * Signature: (JII)I
  */
 JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_resetCStream
-  (JNIEnv *env, jclass obj, jlong stream) {
+  (JNIEnv *env, jclass obj, jobject stream) {
     jclass clazz = (*env)->GetObjectClass(env, obj);
     src_pos_id = (*env)->GetFieldID(env, clazz, "srcPos", "J");
     dst_pos_id = (*env)->GetFieldID(env, clazz, "dstPos", "J");
-    return ZSTD_CCtx_reset((ZSTD_CStream *)(intptr_t) stream, ZSTD_reset_session_only);
+    return ZSTD_CCtx_reset((ZSTD_CStream *)(*env)->GetMemoryAddress(env, stream), ZSTD_reset_session_only);
 }
 
 /*
@@ -57,7 +57,7 @@ JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_re
  * Signature: (J[BI[BI)I
  */
 JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_compressStream
-  (JNIEnv *env, jclass obj, jlong stream, jbyteArray dst, jint dst_size, jbyteArray src, jint src_size) {
+  (JNIEnv *env, jclass obj, jobject stream, jbyteArray dst, jint dst_size, jbyteArray src, jint src_size) {
 
     size_t size = -ZSTD_error_memory_allocation;
 
@@ -70,7 +70,7 @@ JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_co
     ZSTD_outBuffer output = { dst_buff, dst_size, 0 };
     ZSTD_inBuffer input = { src_buff, src_size, src_pos };
 
-    size = ZSTD_compressStream2((ZSTD_CStream *)(intptr_t) stream, &output, &input, ZSTD_e_continue);
+    size = ZSTD_compressStream2((ZSTD_CStream *)(*env)->GetMemoryAddress(env, stream), &output, &input, ZSTD_e_continue);
 
     (*env)->ReleasePrimitiveArrayCritical(env, src, src_buff, JNI_ABORT);
 E2: (*env)->ReleasePrimitiveArrayCritical(env, dst, dst_buff, 0);
@@ -85,14 +85,14 @@ E1: return (jint) size;
  * Signature: (J[BI)I
  */
 JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_endStream
-  (JNIEnv *env, jclass obj, jlong stream, jbyteArray dst, jint dst_size) {
+  (JNIEnv *env, jclass obj, jobject stream, jbyteArray dst, jint dst_size) {
 
     size_t size = -ZSTD_error_memory_allocation;
     void *dst_buff = (*env)->GetPrimitiveArrayCritical(env, dst, NULL);
     if (dst_buff != NULL) {
         ZSTD_outBuffer output = { dst_buff, dst_size, 0 };
         ZSTD_inBuffer input = {NULL, 0, 0};
-        size = ZSTD_compressStream2((ZSTD_CStream *)(intptr_t) stream, &output, &input, ZSTD_e_end);
+        size = ZSTD_compressStream2((ZSTD_CStream *)(*env)->GetMemoryAddress(env, stream), &output, &input, ZSTD_e_end);
         (*env)->ReleasePrimitiveArrayCritical(env, dst, dst_buff, 0);
         (*env)->SetLongField(env, obj, dst_pos_id, output.pos);
     }
@@ -105,14 +105,14 @@ JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_en
  * Signature: (J[BI)I
  */
 JNIEXPORT jint JNICALL Java_com_github_luben_zstd_ZstdOutputStreamNoFinalizer_flushStream
-  (JNIEnv *env, jclass obj, jlong stream, jbyteArray dst, jint dst_size) {
+  (JNIEnv *env, jclass obj, jobject stream, jbyteArray dst, jint dst_size) {
 
     size_t size = -ZSTD_error_memory_allocation;
     void *dst_buff = (*env)->GetPrimitiveArrayCritical(env, dst, NULL);
     if (dst_buff != NULL) {
         ZSTD_outBuffer output = { dst_buff, dst_size, 0 };
         ZSTD_inBuffer input = {NULL, 0, 0};
-        size = ZSTD_compressStream2((ZSTD_CStream *)(intptr_t) stream, &output, &input, ZSTD_e_flush);
+        size = ZSTD_compressStream2((ZSTD_CStream *)(*env)->GetMemoryAddress(env, stream), &output, &input, ZSTD_e_flush);
         (*env)->ReleasePrimitiveArrayCritical(env, dst, dst_buff, 0);
         (*env)->SetLongField(env, obj, dst_pos_id, output.pos);
     }

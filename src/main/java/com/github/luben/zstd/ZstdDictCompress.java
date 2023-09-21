@@ -9,7 +9,7 @@ public class ZstdDictCompress extends SharedDictBase {
         Native.load();
     }
 
-    private long nativePtr = 0;
+    private MemoryAddress nativePtr = null;
     private int level = Zstd.defaultCompressionLevel();
 
     private native void init(byte[] dict, int dict_offset, int dict_size, int level);
@@ -44,7 +44,7 @@ public class ZstdDictCompress extends SharedDictBase {
 
         init(dict, offset, length, level);
 
-        if (0 == nativePtr) {
+        if (MemoryAddress.isNull(nativePtr)) {
             throw new IllegalStateException("ZSTD_createCDict failed");
         }
         // Ensures that even if ZstdDictCompress is created and published through a race, no thread could observe
@@ -69,7 +69,7 @@ public class ZstdDictCompress extends SharedDictBase {
         }
 	initDirect(dict, dict.position(), length, level);
 
-        if (nativePtr == 0L) {
+        if (MemoryAddress.isNull(nativePtr)) {
            throw new IllegalStateException("ZSTD_createCDict failed");
         }
         // Ensures that even if ZstdDictCompress is created and published through a race, no thread could observe
@@ -84,9 +84,9 @@ public class ZstdDictCompress extends SharedDictBase {
 
     @Override
     void  doClose() {
-        if (nativePtr != 0) {
+        if (!MemoryAddress.isNull(nativePtr)) {
             free();
-            nativePtr = 0;
+            nativePtr = null;
         }
     }
 }
