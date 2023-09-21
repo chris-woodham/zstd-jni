@@ -28,22 +28,22 @@ public class ZstdBufferDecompressingStreamNoFinalizer extends BaseZstdBufferDeco
     }
 
     @Override
-    long createDStream() {
+    MemoryAddress createDStream() {
         return createDStreamNative();
     }
 
     @Override
-    long freeDStream(long stream) {
+    long freeDStream(MemoryAddress stream) {
         return freeDStreamNative(stream);
     }
 
     @Override
-    long initDStream(long stream) {
+    long initDStream(MemoryAddress stream) {
         return initDStreamNative(stream);
     }
 
     @Override
-    long decompressStream(long stream, ByteBuffer dst, int dstBufPos, int dstSize, ByteBuffer src, int srcBufPos, int srcSize) {
+    long decompressStream(MemoryAddress stream, ByteBuffer dst, int dstBufPos, int dstSize, ByteBuffer src, int srcBufPos, int srcSize) {
         if (!src.hasArray()) {
             throw new IllegalArgumentException("provided source ByteBuffer lacks array");
         }
@@ -63,13 +63,13 @@ public class ZstdBufferDecompressingStreamNoFinalizer extends BaseZstdBufferDeco
         return (int) recommendedDOutSizeNative();
     }
 
-    private native long createDStreamNative();
+    private native MemoryAddress createDStreamNative();
 
-    private native long freeDStreamNative(long stream);
+    private native long freeDStreamNative(MemoryAddress stream);
 
-    private native long initDStreamNative(long stream);
+    private native long initDStreamNative(MemoryAddress stream);
 
-    private native long decompressStreamNative(long stream, byte[] dst, int dstOffset, int dstSize, byte[] src, int srcOffset, int srcSize);
+    private native long decompressStreamNative(MemoryAddress stream, byte[] dst, int dstOffset, int dstSize, byte[] src, int srcOffset, int srcSize);
 
     private static native long recommendedDOutSizeNative();
 }

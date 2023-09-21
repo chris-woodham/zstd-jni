@@ -12,7 +12,8 @@ public class ZstdDecompressCtx extends AutoCloseBase {
         Native.load();
     }
 
-    private MemoryAddress nativePtr = 0;
+    private MemoryAddress nativePtr = null;
+
     private ZstdDictDecompress decompression_dict = null;
 
     private static native MemoryAddress init();

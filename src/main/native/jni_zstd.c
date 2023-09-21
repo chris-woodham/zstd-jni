@@ -49,7 +49,7 @@ static size_t JNI_ZSTD_decompressedSize(const void* buf, size_t bufSize, jboolea
  */
 JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_Zstd_compressUnsafe
   (JNIEnv *env, jclass obj, jobject dst_buf_ptr, jlong dst_size, jobject src_buf_ptr, jlong src_size, jint level, jboolean checksumFlag) {
-    return JNI_ZSTD_compress((*env)->GetMemoryAddress(dst_buf_ptr), (size_t) dst_size, (*env)->GetMemoryAddress(src_buf_ptr), (size_t) src_size, (int) level, checksumFlag);
+    return JNI_ZSTD_compress((*env)->GetMemoryAddress(env, dst_buf_ptr), (size_t) dst_size, (*env)->GetMemoryAddress(env, src_buf_ptr), (size_t) src_size, (int) level, checksumFlag);
 }
 
 /*
@@ -59,7 +59,7 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_Zstd_compressUnsafe
  */
 JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_Zstd_decompressUnsafe
   (JNIEnv *env, jclass obj, jobject dst_buf_ptr, jlong dst_size, jobject src_buf_ptr, jlong src_size) {
-    return ZSTD_decompress((*env)->GetMemoryAddress(dst_buf_ptr), (size_t) dst_size, (*env)->GetMemoryAddress(src_buf_ptr), (size_t) src_size);
+    return ZSTD_decompress((*env)->GetMemoryAddress(env, dst_buf_ptr), (size_t) dst_size, (*env)->GetMemoryAddress(env, src_buf_ptr), (size_t) src_size);
 }
 
 /*
@@ -223,7 +223,6 @@ JNIEXPORT jint JNICALL Java_com_github_luben_zstd_Zstd_loadFastDictDecompress
     jclass dict_clazz = (*env)->GetObjectClass(env, dict);
     jfieldID decompress_dict = (*env)->GetFieldID(env, dict_clazz, "nativePtr", "Ljava/lang/MemoryAddress;");
     ZSTD_DDict* ddict = (ZSTD_DDict*)(*env)->GetMemoryAddress(env, (*env)->GetObjectField(env, dict, decompress_dict));
-    // ZSTD_DDict* ddict = (ZSTD_DDict*)(*env)->GetMemoryAddress(env, dict_native_ptr);
     if (ddict == NULL) return -ZSTD_error_dictionary_wrong;
     return ZSTD_DCtx_refDDict((ZSTD_DCtx *) (*env)->GetMemoryAddress(env, stream), ddict);
 }
@@ -256,7 +255,6 @@ JNIEXPORT jint JNICALL Java_com_github_luben_zstd_Zstd_loadFastDictCompress
     jclass dict_clazz = (*env)->GetObjectClass(env, dict);
     jfieldID compress_dict = (*env)->GetFieldID(env, dict_clazz, "nativePtr", "Ljava/lang/MemoryAddress;");
     ZSTD_CDict* cdict = (ZSTD_CDict*)(*env)->GetMemoryAddress(env, (*env)->GetObjectField(env, dict, compress_dict));
-    ZSTD_CDict* cdict = (ZSTD_CDict*)(*env)->GetMemoryAddress(env, dict_native_ptr);
     if (cdict == NULL) return -ZSTD_error_dictionary_wrong;
     return ZSTD_CCtx_refCDict((ZSTD_CCtx *)(*env)->GetMemoryAddress(env, stream), cdict);
 }

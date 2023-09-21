@@ -24,7 +24,7 @@ public class ZstdInputStreamNoFinalizer extends FilterInputStream {
     }
 
     // Opaque pointer to Zstd context object
-    private final long stream;
+    private final MemoryAddress stream;
     private long dstPos = 0;
     private long srcPos = 0;
     private long srcSize = 0;
@@ -41,10 +41,10 @@ public class ZstdInputStreamNoFinalizer extends FilterInputStream {
     /* JNI methods */
     public static native long recommendedDInSize();
     public static native long recommendedDOutSize();
-    private static native long createDStream();
-    private static native int  freeDStream(long stream);
-    private native int  initDStream(long stream);
-    private native int  decompressStream(long stream, byte[] dst, int dst_size, byte[] src, int src_size);
+    private static native MemoryAddress createDStream();
+    private static native int  freeDStream(MemoryAddress stream);
+    private native int  initDStream(MemoryAddress stream);
+    private native int  decompressStream(MemoryAddress stream, byte[] dst, int dst_size, byte[] src, int src_size);
 
     /**
      * create a new decompressing InputStream

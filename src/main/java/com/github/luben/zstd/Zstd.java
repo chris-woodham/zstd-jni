@@ -559,9 +559,9 @@ public class Zstd {
 
     /* Advance API */
     public static native int loadDictDecompress(MemoryAddress stream, byte[] dict, int dict_size);
-    public static native int loadFastDictDecompress(MemoryAddress stream, MemoryAddress dictNativePtr);
+    public static native int loadFastDictDecompress(MemoryAddress stream, ZstdDictDecompress dict);
     public static native int loadDictCompress(MemoryAddress stream, byte[] dict, int dict_size);
-    public static native int loadFastDictCompress(MemoryAddress stream, MemoryAddress dictNativePtr);
+    public static native int loadFastDictCompress(MemoryAddress stream, ZstdDictCompress dict);
     public static native int setCompressionChecksums(MemoryAddress stream, boolean useChecksums);
     public static native int setCompressionMagicless(MemoryAddress stream, boolean useMagicless);
     public static native int setCompressionLevel(MemoryAddress stream, int level);

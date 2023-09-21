@@ -19,7 +19,7 @@ public class ZstdOutputStreamNoFinalizer extends FilterOutputStream {
     }
 
     /* Opaque pointer to Zstd context object */
-    private final long stream;
+    private final MemoryAddress stream;
     // Source and Destination positions
     private long srcPos = 0;
     private long dstPos = 0;
@@ -34,12 +34,12 @@ public class ZstdOutputStreamNoFinalizer extends FilterOutputStream {
 
     /* JNI methods */
     public static native long recommendedCOutSize();
-    private static native long createCStream();
-    private static native int  freeCStream(long ctx);
-    private native int resetCStream(long ctx);
-    private native int compressStream(long ctx, byte[] dst, int dst_size, byte[] src, int src_size);
-    private native int flushStream(long ctx, byte[] dst, int dst_size);
-    private native int endStream(long ctx, byte[] dst, int dst_size);
+    private static native MemoryAddress createCStream();
+    private static native int  freeCStream(MemoryAddress ctx);
+    private native int resetCStream(MemoryAddress ctx);
+    private native int compressStream(MemoryAddress ctx, byte[] dst, int dst_size, byte[] src, int src_size);
+    private native int flushStream(MemoryAddress ctx, byte[] dst, int dst_size);
+    private native int endStream(MemoryAddress ctx, byte[] dst, int dst_size);
 
 
     /**

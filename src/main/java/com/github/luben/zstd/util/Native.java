@@ -166,7 +166,6 @@ public enum Native {
             loaded = true;
         } catch (IOException e) {
             // IO errors in extracting and writing the shared object in the temp dir
-            System.out.println(">>>>>>>>>>>>>>>> HERE HERE HERE HERE HERE HERE\n");
             ExceptionInInitializerError err = new ExceptionInInitializerError(
                     "Cannot unpack " + libname + ": " + e.getMessage());
             err.setStackTrace(e.getStackTrace());

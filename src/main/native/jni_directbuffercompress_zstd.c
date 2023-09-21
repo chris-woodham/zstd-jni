@@ -83,8 +83,8 @@ JNIEXPORT jlong JNICALL Java_com_github_luben_zstd_ZstdDirectBufferCompressingSt
     consumed_id = (*env)->GetFieldID(env, clazz, "consumed", "I");
     produced_id = (*env)->GetFieldID(env, clazz, "produced", "I");
     jclass dict_clazz = (*env)->GetObjectClass(env, dict);
-    jfieldID compress_dict = (*env)->GetFieldID(env, dict_clazz, "nativePtr", "J");
-    ZSTD_CDict* cdict = (ZSTD_CDict*)(*env)->GetMemoryAddress(env, (*env)->GetObjectField(env, obj, compress_dict));
+    jfieldID compress_dict = (*env)->GetFieldID(env, dict_clazz, "nativePtr", "Ljava/lang/MemoryAddress;");
+    ZSTD_CDict* cdict = (ZSTD_CDict*)(*env)->GetMemoryAddress(env, (*env)->GetObjectField(env, dict, compress_dict));
     if (cdict == NULL) return -ZSTD_error_dictionary_wrong;
     ZSTD_CStream *stream_pointer = (ZSTD_CStream *)(*env)->GetMemoryAddress(env, stream);
     ZSTD_CCtx_reset(stream_pointer, ZSTD_reset_session_only);

@@ -29,22 +29,22 @@ public class ZstdDirectBufferDecompressingStreamNoFinalizer extends BaseZstdBuff
     }
 
     @Override
-    long createDStream() {
+    MemoryAddress createDStream() {
         return createDStreamNative();
     }
 
     @Override
-    long freeDStream(long stream) {
+    long freeDStream(MemoryAddress stream) {
         return freeDStreamNative(stream);
     }
 
     @Override
-    long initDStream(long stream) {
+    long initDStream(MemoryAddress stream) {
         return initDStreamNative(stream);
     }
 
     @Override
-    long decompressStream(long stream, ByteBuffer dst, int dstOffset, int dstSize, ByteBuffer src, int srcOffset, int srcSize) {
+    long decompressStream(MemoryAddress stream, ByteBuffer dst, int dstOffset, int dstSize, ByteBuffer src, int srcOffset, int srcSize) {
         return decompressStreamNative(stream, dst, dstOffset, dstSize, src, srcOffset, srcSize);
     }
 
@@ -52,13 +52,13 @@ public class ZstdDirectBufferDecompressingStreamNoFinalizer extends BaseZstdBuff
         return (int) recommendedDOutSizeNative();
     }
 
-    private static native long createDStreamNative();
+    private static native MemoryAddress createDStreamNative();
 
-    private static native long freeDStreamNative(long stream);
+    private static native long freeDStreamNative(MemoryAddress stream);
 
-    private native long initDStreamNative(long stream);
+    private native long initDStreamNative(MemoryAddress stream);
 
-    private native long decompressStreamNative(long stream, ByteBuffer dst, int dstOffset, int dstSize, ByteBuffer src, int srcOffset, int srcSize);
+    private native long decompressStreamNative(MemoryAddress stream, ByteBuffer dst, int dstOffset, int dstSize, ByteBuffer src, int srcOffset, int srcSize);
 
     private static native long recommendedDOutSizeNative();
 }
